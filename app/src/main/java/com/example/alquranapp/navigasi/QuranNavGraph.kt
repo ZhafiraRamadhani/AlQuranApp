@@ -12,12 +12,14 @@ import com.example.alquranapp.listScreen.SurahListScreen
 import com.example.alquranapp.viewmodel.AppSettingsViewModel
 import com.example.alquranapp.viewmodel.DetailViewModel
 import com.example.alquranapp.viewmodel.SurahViewModel
+import com.example.alquranapp.viewmodel.LoginViewModel
 
 @Composable
 fun QuranNavGraph(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    settingsViewModel: AppSettingsViewModel //terima parameter dari MainActivity
+    settingsViewModel: AppSettingsViewModel,
+    loginViewModel: LoginViewModel
 ) {
     NavHost(navController = navController, startDestination = "home") {
 
@@ -25,24 +27,31 @@ fun QuranNavGraph(
         composable("home") {
             HomeScreen(
                 navController = navController,
-                settingsViewModel = settingsViewModel //diteruskan ke HomeScreen
+                settingsViewModel = settingsViewModel,
+                loginViewModel = loginViewModel
             )
         }
 
-        //surah list
+        //surah list screen
         composable("surah_list") {
             val viewModel: SurahViewModel = viewModel()
-            SurahListScreen(navController = navController, viewModel = viewModel)
+            SurahListScreen(
+                navController = navController,
+                viewModel = viewModel,
+                loginViewModel = loginViewModel
+            )
         }
 
-        //detail ayat by surah
+        //detail surah
         composable("detail/{id}") { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: 1
             val viewModel: DetailViewModel = viewModel()
             DetailSurahScreen(
                 surahId = id,
                 viewModel = viewModel,
-                isDarkTheme = settingsViewModel.isDarkTheme.value //kirim nilai dari ViewModel
+                isDarkTheme = settingsViewModel.isDarkTheme.value,
+                loginViewModel = loginViewModel,
+                navController = navController
             )
         }
     }
